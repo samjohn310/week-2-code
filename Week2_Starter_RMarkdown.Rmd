@@ -1,8 +1,10 @@
 ---
-title: "Week 2 - Intro to Data Structures in R "
+title: 'Week 2 - Intro to Data Structures in R '
 author: "Prof. Hsu"
 date: "017/01/2022"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -21,20 +23,24 @@ You may also ask what is a tibble and how is it different from R's native data s
 Let's practice reading data into R using the `read_csv` function. Make sure you have the `readr` package installed and loaded into your environment.
 ```{r practice reading data}
 # using `read.csv` function
-dem_score <- read.csv('https://moderndive.com/data/dem_score.csv')
+dem_score <- read.csv("dem_score.csv")
 
 # now take a look at the data
 dem_score
+```
+
+```{r}
+# now load the package into your R environment
+library(readr)
+library(tidyverse)
+```
 
 # you'll only need to do this the first time to install the `readr` package if you haven't already
 install.packages(c("readr", "tidyverse"))
 
-# now load the package into your R environment
-library(readr)
-library(tidverse)
-
+```{r practice}
 # let's load in the dataset on the ratings of different levels of democracy from the Modern Dive textbook
-dem_score <- read_csv("https://moderndive.com/data/dem_score.csv")
+dem_score <- read_csv("dem_score.csv")
 
 # now take a look at the data - how is this different from using the `read.csv` function in base R?
 dem_score
@@ -42,7 +48,7 @@ dem_score
 ```
 **Question**
 Describe what's in this dataset?
-
+This dataset has columns of countries, and then a variety of years ranging from 1952 to 1992 with a new column for every five years. Each country has a score from -10 to 10 in each year.
 ### Exploring a data object in R 
 Once you load in data, there are a few key functions you'll want to run to get a feel for what's in the dataset. Some of these functions are part of the tidyverse while some of them are from base R. A few of the functions that are helpful for this are:  
 - `ncol()`
@@ -53,11 +59,23 @@ Once you load in data, there are a few key functions you'll want to run to get a
 
 Practice a few of these functions in the chunk below
 ```{r ways to explore data frames}
+ncol(dem_score)
+nrow(dem_score)
+dim(dem_score)
+head(dem_score)
+str(dem_score)
 
-
+dem_score[24,5]
+dem_score[c(21:24), 5]
+dem_score[21:24, 5]
+dem_score[c(21:24),]
+dem_score[c(21,24),]
+dem_score[c(0,5:6),]
+dem_score[, c("1967", "1972")]
 ```
 **Question**
 What does the second column of the `str` function show you? What are the possible different data types we might work with (review from PLCY 460?)?
+The second column of the str function tells us that the variables are numeric data. We know that there are numeric and character data types, along with more specifications within these catagories.
 
 ### Extracting values from a data frame
 We had a little practice with this in Week 1 when we extracted the value from vectors:
@@ -68,7 +86,8 @@ grades[3]
 
 For data frames, it’s similar, except that data frames have two dimensions - row and columns. When we reference a value in a data frame, rows are referenced first followed by columns.
 ```{r}
-# what does the code below return?
+# what does the code below return? -7
+
 dem_score[24,5]
 
 # we can also extract multiple rows from a column using the `c()` function or simply just with a `:`:
@@ -86,31 +105,31 @@ dem_score[c(21:24),]
 dem_score[c(21,24),]
 
 # how might we extract just columns 5 and 6 with all rows?
-
+dem_score[c(0,5:6),]
 ```
 Other than using R's indexing feature to extract data, we can also use the variable/column names to extract data
 ```{r}
-dem_score[, c("X1967", "X1972")]
+dem_score[, c("1967", "1972")]
 
 ```
 We can also use the `$` operator as well, which you had a preview of last week:
 ```{r}
-dem_score$X1972
+dem_score$"1972"
 
 # remember, we can also use the `$` to append new columns to our data frame, like we did last week!
 ```
 What if we want to get the second country's value in 1972?
 ```{r}
-
+dem_score[2,]$"1972"
 ```
 Or if we want to know the United States' score in 1972? 
 ```{r}
 # we can use the `==` operator we learned last week!
-dem_score$X1972[dem_score$country == "United States"]
+dem_score$"1972"[dem_score$country == "United States"]
 ```
 **Question**
 If you were to read the above out loud, how would it read?
-
+"dem underscore score dollarsign quote 1972 quote open bracket dem underscore score dollarsign country equals equals quote United States unquote close bracket."
 ### What makes data `tidy`?
 Throughout this course, we will be working with data in a `tidy` format, which will make our lives much easier throughout the entire data cleaning/munging, visualization, analysis, and modeling process. Since there are so many new R libraries that are now being built upon the tidyverse, understanding the tidy data format and formatting your data in this way will make your life easier and your code more efficient.  
 
