@@ -1,0 +1,123 @@
+---
+title: "Week 2 - Intro to Data Structures in R "
+author: "Prof. Hsu"
+date: "017/01/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Week 2 - Introduction to Data Structures in R 
+
+This week, we'll start to learn how we can structure and work with data in R using a suite of functions in the `tidyverse` package. What is the tidyverse? According to [Tidyverse](https://tidyverse.org), "The tidyverse is an opinionated collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures."  
+
+### Reading in data 
+There are several ways you can read data into R -  1) Through R's built-in function `read.csv`; 2) From the `reader` package, using a similar function `read_csv` that will read a csv file into R as a tibble, which is a bit faster than `read.csv` and has some advantages over it; 3) From the R console itself - in the Environment pane using the `Import Dataset` button on the GUI (Graphic User Interface).  
+
+You may also ask what is a tibble and how is it different from R's native data structure, the data frame, which we saw in Week 1? As you have read in [R for Data Science](https://r4ds.had.co.nz/tibbles.html) "Tibbles are data frames, but they tweak some older behaviours to make life a little easier. R is an old language, and some things that were useful 10 or 20 years ago now get in your way. It’s difficult to change base R without breaking existing code, so most innovation occurs in packages. Here we will describe the tibble package, which provides opinionated data frames that make working in the tidyverse a little easier." For the most part in this class, we'll be referring to tibbles and data frames interchangeably. I will mostly use data frame to refer to data structures in R, since many of the base R functions for accessing/exploring parts of a data frame are fairly intuitive.
+
+Let's practice reading data into R using the `read_csv` function. Make sure you have the `readr` package installed and loaded into your environment.
+```{r practice reading data}
+# using `read.csv` function
+dem_score <- read.csv('https://moderndive.com/data/dem_score.csv')
+
+# now take a look at the data
+dem_score
+
+# you'll only need to do this the first time to install the `readr` package if you haven't already
+install.packages(c("readr", "tidyverse"))
+
+# now load the package into your R environment
+library(readr)
+library(tidverse)
+
+# let's load in the dataset on the ratings of different levels of democracy from the Modern Dive textbook
+dem_score <- read_csv("https://moderndive.com/data/dem_score.csv")
+
+# now take a look at the data - how is this different from using the `read.csv` function in base R?
+dem_score
+
+```
+**Question**
+Describe what's in this dataset?
+
+### Exploring a data object in R 
+Once you load in data, there are a few key functions you'll want to run to get a feel for what's in the dataset. Some of these functions are part of the tidyverse while some of them are from base R. A few of the functions that are helpful for this are:  
+- `ncol()`
+- `nrow()`
+- `dim()`
+- `head()` - this is somewhat deprecated in a tibble, since a tibble prints out the first 10 rows of a data frame anyways
+- `str()`
+
+Practice a few of these functions in the chunk below
+```{r ways to explore data frames}
+
+
+```
+**Question**
+What does the second column of the `str` function show you? What are the possible different data types we might work with (review from PLCY 460?)?
+
+### Extracting values from a data frame
+We had a little practice with this in Week 1 when we extracted the value from vectors:
+```{r}
+grades <- c(85, 90, 78, 50) 
+grades[3] 
+```
+
+For data frames, it’s similar, except that data frames have two dimensions - row and columns. When we reference a value in a data frame, rows are referenced first followed by columns.
+```{r}
+# what does the code below return?
+dem_score[24,5]
+
+# we can also extract multiple rows from a column using the `c()` function or simply just with a `:`:
+dem_score[c(21:24), 5]
+dem_score[21:24, 5]
+
+# same for extracting multiple columns
+dem_score[c(21:24), c(5:6)]
+dem_score[21:24, 5:6]
+
+# let's say we just want to look at all columns for a certain subset of rows
+dem_score[c(21:24),]
+
+# if we want to skip rows 22 and 23?
+dem_score[c(21,24),]
+
+# how might we extract just columns 5 and 6 with all rows?
+
+```
+Other than using R's indexing feature to extract data, we can also use the variable/column names to extract data
+```{r}
+dem_score[, c("X1967", "X1972")]
+
+```
+We can also use the `$` operator as well, which you had a preview of last week:
+```{r}
+dem_score$X1972
+
+# remember, we can also use the `$` to append new columns to our data frame, like we did last week!
+```
+What if we want to get the second country's value in 1972?
+```{r}
+
+```
+Or if we want to know the United States' score in 1972? 
+```{r}
+# we can use the `==` operator we learned last week!
+dem_score$X1972[dem_score$country == "United States"]
+```
+**Question**
+If you were to read the above out loud, how would it read?
+
+### What makes data `tidy`?
+Throughout this course, we will be working with data in a `tidy` format, which will make our lives much easier throughout the entire data cleaning/munging, visualization, analysis, and modeling process. Since there are so many new R libraries that are now being built upon the tidyverse, understanding the tidy data format and formatting your data in this way will make your life easier and your code more efficient.  
+
+According to [R for Data Science](https://r4ds.had.co.nz/tidy-data.html), there are three rules for `tidy` data:  
+
+- Each variable must have its own column.  
+- Each observation must have its own row.  
+- Each value must have its own cell.  
+
+We will get a lot more practice with wrangling data into tidy format in Week 4. 
